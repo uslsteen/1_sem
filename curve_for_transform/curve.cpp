@@ -110,10 +110,10 @@ void Input(Second_Order_Curve* curve)
 			check_snf = scanf("%lf%lf%lf%lf", &param_p, &Ax, &Ay, &angle);
 			assert(check_snf == 4);
 
-			curve->param_a = param_p;
+			curve->param_p = param_p;
 			curve->Ax = Ax;
 			curve->Ay = Ay;
-			curve->angle;
+			curve->angle = angle; 
 		}
 }
 
