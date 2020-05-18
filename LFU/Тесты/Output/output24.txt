@@ -1,0 +1,2 @@
+Cache hits: 1132
+Cache coeffs: 0.152622
