@@ -1,5 +1,17 @@
 #include "lfu.h"
 
+
+//! This program is an LFU strategy.
+//! Shortly, the least used data is pushed out of the cache.
+//
+//! This program exists both in the cpp extension and in the c extension on the GitHub.
+// 
+//! Created by Alexander Chernov, Nechaev Nikita and Shurygin Anton.
+
+
+//! The main function of our task is described here.
+
+
 int main()
 {
 	struct Cache* cache = NULL;
@@ -9,7 +21,7 @@ int main()
 	hash_t hash = -1;
 
 	in = fopen("input10.txt", "r");
-	out = fopen("output.txt", "a");
+	out = fopen("output.txt", "w");
 	assert(in);
 	assert(out);
 
@@ -28,7 +40,9 @@ int main()
 		hash = Input(in, cache);
 
 #if MODE == 1
+
 		Cache_Dump(cache, hash);
+
 #endif
 	}
 
@@ -44,3 +58,5 @@ int main()
 
 	return 0;
 }
+
+//! End of main function
