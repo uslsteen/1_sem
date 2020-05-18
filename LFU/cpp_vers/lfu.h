@@ -10,7 +10,12 @@
 
 #pragma warning (disable : 4996)
 
-#define MODE 0
+//! DEFINE FOR MODE OF OUR PROGRAM
+
+#define MODE 0 
+
+//! if 0 then realese version
+//! if 1 then debug version
 
 enum CONDITIONS
 {
