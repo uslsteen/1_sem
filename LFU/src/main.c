@@ -1,5 +1,15 @@
 #include "lfu.h"
 
+
+//! This program is an LFU strategy.
+//! Shortly, the least used data is pushed out of the cache.
+//
+//! This program exists both in the cpp extension and in the c extension on the GitHub.
+// 
+//! Created by Alexander Chernov, Nechaev Nikita and Shurygin Anton.
+
+
+
 int main()
 {
 	struct Cache* cache = NULL;
