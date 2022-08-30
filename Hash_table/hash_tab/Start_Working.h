@@ -21,35 +21,7 @@ enum FLAG
 
 //! define for debug
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> cdcb8b0ac8e186dc212604e30f9134f75946ecb9
 #define REGIME 0;
-=======
-#define REGIME 1;
->>>>>>> hashtable
-=======
-<<<<<<< HEAD
-#define REGIME 1;
->>>>>>> f55494c... hashtable
-=======
-#define REGIME 0;
->>>>>>> 1c9e264... upd regime
-=======
-#define REGIME 1;
->>>>>>> cafc32c... hashtable
-=======
-#define REGIME 0;
->>>>>>> 281dfef... upd regime
-=======
-#define REGIME 0;
->>>>>>> cf32063390d7c3259ddc6d4c018feffd135e2138
->>>>>>> cdcb8b0ac8e186dc212604e30f9134f75946ecb9
 
 //! set REGIME = 1 if you want to receive more info
 //! set REGIME = 0 if you dont want to receive a lot of information
