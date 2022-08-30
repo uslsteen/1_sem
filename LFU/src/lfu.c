@@ -3,7 +3,6 @@
 
 //!**********CONSTRUCTORS**********//
 
-
 //! Function - constructor of empty freq
 
 struct Freq* Empty_Freq_Constructor()
@@ -34,42 +33,14 @@ struct Item* New_Item_Constructor(data_type data, struct Freq* parent)
 }
 
 
-//! Function - constructor of single hash item
-
-struct Hash_Item* Hash_Item_Constructor()
-{
-	struct Hash_Item* new_item = (struct Hash_Item*) calloc(1, sizeof(struct Hash_Item));
-	assert(new_item);
-
-	new_item->next = NULL;
-	new_item->value = 0;
-	new_item->item = NULL;
-
-	return new_item;
-}
-
-
-//! Function - constructor of hashtab
-
-struct Cache* Hashtab_Constructor()
-{
-	int i = 0;
-	struct Cache* cache = (struct Cache*) calloc(1, sizeof(struct Cache));
-	assert(cache);
-
-	for (i = 0; i < TABLE_MAXSIZE; ++i)
-	{
-		cache->hashtable[i] = Hash_Item_Constructor();
-	}
-	return cache;
-}
-
-
 //! Function - constructor of cache
 
 struct Cache* Cache_Constructor(int Cache_MAXSIZE)
 {
-	struct Cache* cache = Hashtab_Constructor();
+	struct Cache* cache = (struct Cache*) calloc(1, sizeof(struct Cache));
+	assert(cache);
+
+	Hashtab_Constructor(cache->hashtable);
 
 	cache->cache_hits = 0;
 
@@ -86,7 +57,6 @@ struct Cache* Cache_Constructor(int Cache_MAXSIZE)
 
 //!**********FUNC_FOR_WORKING_WITH_CACHE**********//
 
-
 //! Function - constructor of new freq node
 
 struct Freq* Insert_new_Freq(int freq, struct Freq* prev, struct Freq* next)
@@ -101,7 +71,6 @@ struct Freq* Insert_new_Freq(int freq, struct Freq* prev, struct Freq* next)
 
 	return new_freq;
 }
-
 
 //! Function for insertion in cache
 
@@ -125,7 +94,6 @@ struct Item* Insert_in_Cache(hash_t index, data_type data, struct Cache* cache)
 	Add(freq, index, data, cache);
 
 	return freq->child;
-
 }
 
 
@@ -153,86 +121,17 @@ void Add(struct Freq* freq, hash_t index, data_type data, struct Cache* cache)
 		tmp->prev = item;
 	}
 
-	Hashtab_Insert(item, index, cache);
+	Hashtab_Insert(item, cache->hashtable);
 }
 
-//! Function for removing from hashtable
-
-void Hashtab_Delete(data_type data, hash_t index, struct Cache* cache)
-{
-	struct Hash_Item* cur_hash = cache->hashtable[index];
-	struct Hash_Item* tmp = NULL;
-
-	assert(cache);
-
-	if (cur_hash->next == NULL)
-	{
-		cur_hash->item = NULL;
-		cur_hash->value = 0;
-	}
-	else
-	{
-		if (cur_hash->value == data) 
-		{
-			tmp = cur_hash->next;
-
-			cur_hash->value = cur_hash->next->value;
-			cur_hash->item = cur_hash->next->item;
-			cur_hash->next = cur_hash->next->next;
-
-			free(tmp);
-		}
-		else 
-		{
-			while (cur_hash->next != NULL)
-			{
-				if (cur_hash->next->value == data)
-					break;
-
-				cur_hash = cur_hash->next;
-			}
-
-			tmp = cur_hash->next;
-			cur_hash->next = tmp->next;
-
-			free(tmp);
-		}
-	}
-}
-
-
-//! Function for instertion in hashtable
-
-void Hashtab_Insert(struct Item* item, hash_t index, struct Cache* cache)
-{
-	struct Hash_Item* cur_hash = cache->hashtable[index];
-	struct Hash_Item* tmp = Hash_Item_Constructor();
-	assert(tmp);
-	assert(cache);
-
-	if (cur_hash->item == NULL)
-	{
-		cur_hash->value = item->data;
-		cur_hash->item = item;
-	}
-	else
-	{
-		tmp->next = cur_hash->next;
-		cur_hash->next = tmp;
-		tmp->item = item;
-		tmp->value = item->data;
-	}
-
-}
 
 //! Function for removing item from selected place
-
 void Remove_Item(struct Item* cur, hash_t index, struct Cache* cache)
 {
 	struct Freq* freq = cur->parent;
 	cache->cache_size -= 1;
 
-	Hashtab_Delete(cur->data, index, cache);
+	Hashtab_Delete(cur->data, cache->hashtable);
 
 	if (cur->prev == NULL && cur->next == NULL)
 	{
@@ -265,51 +164,6 @@ void Remove_Item(struct Item* cur, hash_t index, struct Cache* cache)
 	}
 }
 
-//! Function for searching item in hashtable
-
-struct Output* Hashtab_Lookup(struct Hash_Item* cur_hash, data_type data)
-{
-	struct Output* res = (struct Output*) calloc(1, sizeof(struct Output));
-	assert(res);
-
-	if (cur_hash->item == NULL)
-	{
-		res->res = DOESNT_EXIST;
-		res->item = NULL;
-
-		return res;
-	}
-	else if (cur_hash->next == NULL)
-	{
-		if (cur_hash->value == data) 
-		{
-			res->item = cur_hash->item;
-			res->res = EXIST;
-			return res;
-		}
-		else 
-		{
-			res->item = NULL;
-			res->res = DOESNT_EXIST;
-			return res;
-		}
-	}
-	else
-		while (cur_hash != NULL)
-		{
-			if (data == cur_hash->value)
-			{
-				res->item = cur_hash->item;
-				res->res = EXIST;
-				return res;
-			}
-			cur_hash = cur_hash->next;
-		}
-
-	res->res = DOESNT_EXIST;
-	res->item = NULL;
-	return res;
-}
 
 //! Function for accessing to item
 
@@ -324,31 +178,31 @@ data_type Access_to_Item(data_type data, hash_t index, struct Cache* cache)
 
 	switch (res->res)
 	{
-		case DOESNT_EXIST:
-			res->item = Insert_in_Cache(index, data, cache);
+	case DOESNT_EXIST:
+		res->item = Insert_in_Cache(index, data, cache);
 
-			break;
+		break;
 
-		case EXIST:
-			cache->cache_hits += 1;
-			freq = res->item->parent;
-			next_freq = freq->next;
+	case EXIST:
+		cache->cache_hits += 1;
+		freq = res->item->parent;
+		next_freq = freq->next;
 
-			if ((next_freq == cache->freq_head) || (next_freq->value != (freq->value + 1)))
-			{
-				next_freq = Insert_new_Freq(freq->value + 1, freq, next_freq);
-			}
+		if ((next_freq == cache->freq_head) || (next_freq->value != (freq->value + 1)))
+		{
+			next_freq = Insert_new_Freq(freq->value + 1, freq, next_freq);
+		}
 
-			Remove_Item(res->item, index, cache);
+		Remove_Item(res->item, index, cache);
 
-			Add(next_freq, index, data, cache);
+		Add(next_freq, index, data, cache);
 
-			if (freq->child == NULL)
-			{
-				Delete_Freq(freq);
-			}
+		if (freq->child == NULL)
+		{
+			Delete_Freq(freq);
+		}
 
-			break;
+		break;
 	}
 
 	res1 = res->item->data;
@@ -358,26 +212,6 @@ data_type Access_to_Item(data_type data, hash_t index, struct Cache* cache)
 	return res1;
 }
 
-//! Function for calculating hash
-
-int Hash_Func(data_type key)
-{
-	hash_t hash = 0;
-	size_t bytes_len = sizeof(key);
-
-	for (size_t i = 0; i < bytes_len; i++)
-	{
-		hash += (key);
-		hash += (hash << 10);
-		hash ^= (hash >> 6);
-	}
-
-	hash += (hash << 3);
-	hash ^= (hash >> 11);
-	hash += (hash << 15);
-
-	return (abs(hash % TABLE_MAXSIZE));
-}
 
 //! Function for input data
 
@@ -422,7 +256,7 @@ int Remove_LFU(struct Cache* cache)
 		freq->old_child = NULL;
 		freq->child = NULL;
 
-		if (freq->value != 1) 
+		if (freq->value != 1)
 		{
 			Delete_Freq(freq);
 			res = 1;
@@ -435,35 +269,13 @@ int Remove_LFU(struct Cache* cache)
 		free(item);
 	}
 
-	Hashtab_Delete(data, index, cache);
+	Hashtab_Delete(data, cache->hashtable);
 
 	return res;
 }
 
 
 //!**********DISTRUCTORS**********//
-
-
-//! Function-distructor for hashtable
-
-void Hashtab_Distructor(struct Hash_Item** hashtab)
-{
-	int i = 0;
-	struct Hash_Item* h_item = NULL, * h_next = NULL;
-
-	for (i = 0; i < TABLE_MAXSIZE; i++)
-	{
-		h_item = hashtab[i];
-
-		while (h_item != NULL)
-		{
-			h_next = h_item->next;
-			free(h_item->item);
-			free(h_item);
-			h_item = h_next;
-		}
-	}
-}
 
 
 //! Function-distructor for freq-list
