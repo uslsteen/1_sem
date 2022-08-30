@@ -22,10 +22,14 @@ enum FLAG
 //! define for debug
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define REGIME 0;
 =======
 #define REGIME 1;
 >>>>>>> hashtable
+=======
+#define REGIME 0;
+>>>>>>> cf32063390d7c3259ddc6d4c018feffd135e2138
 
 //! set REGIME = 1 if you want to receive more info
 //! set REGIME = 0 if you dont want to receive a lot of information
