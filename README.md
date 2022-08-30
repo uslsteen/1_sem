@@ -1,4 +1,4 @@
-# First semestr.
+# First semestr
 
 ![GitHub repo size](https://img.shields.io/github/repo-size/uslsteen/1sem?style=for-the-badge)
 ![GitHub last commit](https://img.shields.io/github/last-commit/uslsteen/1sem?color=red&style=for-the-badge)
